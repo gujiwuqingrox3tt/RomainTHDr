@@ -13,11 +13,14 @@ public class Ant {
     private ArrayList<Node> history;
     private double totalLength;
 
+    private int id;
+
     public Ant(int id, ArrayList<Node> nodes) {
         this.availableNodes = (ArrayList<Node>) nodes.clone();
         this.totalLength = 0;
         this.currentNode = availableNodes.get(id);
         this.history = new ArrayList<>();
+        this.id = id;
 
         this.availableNodes.remove(this.currentNode);
     }
@@ -83,5 +86,9 @@ public class Ant {
 
     public double getTotalLength() {
         return totalLength;
+    }
+
+    public int getId() {
+        return id;
     }
 }

@@ -6,26 +6,29 @@ import java.util.Random;
 
 public class Graph {
     private Node[] nodes;
+    private Link[] links;
 
-    public Graph(int nb) {
+    public Graph(int nbNodes) {
         // Link[][] liens = new Link[nb][nb];
-        nodes = new Node[nb];
+        nodes = new Node[nbNodes];
+        links = new Link[(nbNodes * (nbNodes-1))/2];
+        int cptLinks = 0;
 
         Random rand = new Random();
 
-        for (int i = 0; i < nb; i++) {
-            int x = Math.abs(rand.nextInt()) % 100 - 50;
-            int y = Math.abs(rand.nextInt()) % 100 - 50;
-
-            nodes[i] = new Node(x, y);
+        for (int i = 0; i < nbNodes; i++) {
+            nodes[i] = new Node(rand.nextDouble(), rand.nextDouble());
         }
 
-        for (int i = 0; i < nb; i++) {
-            for (int j = i + 1; j < nb; j++) {
+        for (int i = 0; i < nbNodes; i++) {
+            for (int j = i + 1; j < nbNodes; j++) {
                 //on fait pas GIGA-CHIER
                 Link lien = new Link(1, nodes[i], nodes[j]);
                 nodes[i].addLink(lien);
                 nodes[j].addLink(lien);
+
+                links[cptLinks] = lien;
+                cptLinks++;
             }
         }
     }
@@ -35,6 +38,6 @@ public class Graph {
     }
 
     public Link[] getAllLinks() {
-        return null;
+        return links;
     }
 }

@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class Node {
     private ArrayList<Link> links;
-    private int x, y;
+    private double x, y;
 
-    public Node(int x, int y) {
+    public Node(double x, double y) {
         this.x = x;
         this.y = y;
-        links = new ArrayList<Link>();
+        links = new ArrayList<>();
     }
 
     public void addLink(Link link) {
@@ -29,11 +29,11 @@ public class Node {
         return null;
     }
 
-    public int getX() {
+    public double getX() {
         return x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 }

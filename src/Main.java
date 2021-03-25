@@ -1,28 +1,33 @@
 import model.Ant;
+import model.Colony;
 import model.Graph;
 import model.Node;
+import model.Simulation;
+import view.MainWindow;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        Graph graph = new Graph(5);
+        final int n = 5;
 
-        Ant ant = new Ant(1, new ArrayList<>(Arrays.asList(graph.getNodes())));
+        Simulation simulation = new Simulation(n);
 
-        int i = 0;
+        /*
+        Colony colony = simulation.getColony();
 
-        boolean ok;
-        do {
-            System.out.println(ant.getCurrentNode().getX() + " " + ant.getCurrentNode().getY());
-            ok = ant.nextNode();
-            i++;
-            if (i == 100) {
-                System.err.println("STOP");
-                break;
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < n; j++) {
+                Ant ant = colony.get(j);
+                System.out.println(ant.getId() + " " + ant.getCurrentNode().getX() + " " + ant.getCurrentNode().getY());
+                ant.nextNode();
             }
-        } while (ok);
+            System.out.println();
+        }
+        */
+
+        new MainWindow(simulation);
     }
 
     private static final double C = 0.7;
