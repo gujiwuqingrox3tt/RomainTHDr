@@ -17,12 +17,11 @@ public class Graph {
         Random rand = new Random();
 
         for (int i = 0; i < nbNodes; i++) {
-            nodes[i] = new Node(rand.nextDouble(), rand.nextDouble());
+            nodes[i] = new Node(i, rand.nextDouble(), rand.nextDouble());
         }
 
         for (int i = 0; i < nbNodes; i++) {
             for (int j = i + 1; j < nbNodes; j++) {
-                //on fait pas GIGA-CHIER
                 Link lien = new Link(1, nodes[i], nodes[j]);
                 nodes[i].addLink(lien);
                 nodes[j].addLink(lien);
@@ -39,5 +38,9 @@ public class Graph {
 
     public Link[] getAllLinks() {
         return links;
+    }
+
+    public int getSize() {
+        return nodes.length;
     }
 }

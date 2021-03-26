@@ -5,10 +5,12 @@ import java.util.ArrayList;
 public class Node {
     private ArrayList<Link> links;
     private double x, y;
+    private int id;
 
-    public Node(double x, double y) {
+    public Node(int id, double x, double y) {
         this.x = x;
         this.y = y;
+        this.id = id;
         links = new ArrayList<>();
     }
 
@@ -35,5 +37,9 @@ public class Node {
 
     public double getY() {
         return y;
+    }
+
+    public int getId() {
+        return id;
     }
 }

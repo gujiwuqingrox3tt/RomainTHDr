@@ -4,91 +4,67 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Ant {
-    private static final double q = 1;
-    private static final double a = 1;
-    private static final double b = 1;
-
     private Node currentNode;
     private ArrayList<Node> availableNodes;
     private ArrayList<Node> history;
     private double totalLength;
-
-    private int id;
 
     public Ant(int id, ArrayList<Node> nodes) {
         this.availableNodes = (ArrayList<Node>) nodes.clone();
         this.totalLength = 0;
         this.currentNode = availableNodes.get(id);
         this.history = new ArrayList<>();
-        this.id = id;
-
         this.availableNodes.remove(this.currentNode);
     }
 
-    public boolean nextNode() {
-        /*ArrayList<Link> goodLinks = new ArrayList<>();
-
-        for (Link link : currentNode.getLinks()) {
-            //si le lien est valide on l'ajoute
-
-            if (link.getInput() == currentNode) {
-                if (availableNodes.contains(link.getOutput())) {
-                    currentNode = link.getOutput();
-                    goodLinks.add(link);
-                }
-            }
-            else if (link.getOutput() == currentNode) {
-                if (availableNodes.contains(link.getInput())) {
-                    currentNode = link.getInput();
-                    goodLinks.add(link);
-                }
-            }
-            else {
-                System.err.println("ptdr t ki?");
-            }
-        }*/
-
-        //si on as nul part ou aller
+    public void nextNode() {
+        // Si l'on a nulle part où aller
         if (availableNodes.size() == 0) {
-            return false;
+            history.add(currentNode);
         }
+        else {
+            // On calcule les poids
+            double[] weights = new double[availableNodes.size()];
+            double total = 0;
+            Link linkCour;
 
-        //on calcule les poids
-        double[] weights = new double[availableNodes.size()];
-        double total = 0;
-        Link linkCour;
+            for (int i = 0; i < availableNodes.size(); i++) {
+                linkCour = currentNode.getLink(availableNodes.get(i));
+                weights[i] = Math.pow(Constantes.Q * (linkCour.getPheromones()), Constantes.a) * Math.pow(1 / (linkCour.getLength()), Constantes.b);
+                total += weights[i];
+            }
 
-        for (int i = 0; i < availableNodes.size(); i++) {
-            linkCour = currentNode.getLink(availableNodes.get(i));
-            weights[i] = Math.pow(q * (linkCour.getPheromones()), a) * Math.pow(1 / (linkCour.getLength()), b);
-            total += weights[i];
-        }
-        //random
-        Random rdm = new Random();
-        double res = rdm.nextDouble();
-        double tmp = 0;
-        for (int i = 0; i < availableNodes.size(); i++) {
-            tmp += weights[i];
-            if (res <= (tmp/total)) {
-                history.add(currentNode);
-                currentNode = availableNodes.get(i);
-                availableNodes.remove(i);
-                break;
+            // Random
+            Random rdm = new Random();
+            double res = rdm.nextDouble();
+            double tmp = 0;
+            for (int i = 0; i < availableNodes.size(); i++) {
+                tmp += weights[i];
+                if (res <= (tmp / total)) {
+                    Node nextNode = availableNodes.get(i);
+                    history.add(currentNode);
+                    totalLength += currentNode.getLink(availableNodes.get(i)).getLength();
+                    currentNode = nextNode;
+                    availableNodes.remove(i);
+                    break;
+                }
             }
         }
-
-        return true;
     }
 
-    public Node getCurrentNode() {
-        return currentNode;
+    public void deposePheromones() {
+        Link link;
+        for (int i = 0; i < history.size(); i++) {
+            link = history.get(i).getLink(history.get((i+1)%history.size()));
+            link.setPheromones(link.getPheromones() + (Constantes.Q/this.totalLength));
+        }
     }
 
     public double getTotalLength() {
         return totalLength;
     }
 
-    public int getId() {
-        return id;
+    public ArrayList<Node> getHistory() {
+        return history;
     }
 }

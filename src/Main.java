@@ -1,38 +1,30 @@
-import model.Ant;
 import model.Colony;
+import model.Constantes;
 import model.Graph;
 import model.Node;
-import model.Simulation;
 import view.MainWindow;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        final int n = 5;
+        Graph graph = new Graph(Constantes.NB_NODES);
 
-        Simulation simulation = new Simulation(n);
+        Colony colony = new Colony(graph);
 
-        /*
-        Colony colony = simulation.getColony();
-
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < n; j++) {
-                Ant ant = colony.get(j);
-                System.out.println(ant.getId() + " " + ant.getCurrentNode().getX() + " " + ant.getCurrentNode().getY());
-                ant.nextNode();
-            }
-            System.out.println();
+        colony.cycleColony();
+        while (!colony.hasFinished()) {
+            colony.cycleColony();
         }
-        */
 
-        new MainWindow(simulation);
-    }
+        List<Node> bestNodes = colony.getBestNodes();
 
-    private static final double C = 0.7;
+        for (Node node : bestNodes) {
+            System.out.print("(" + node.getX() + ", " + node.getY() + ") -> ");
+        }
+        System.out.print("(" + bestNodes.get(0).getX() + ", " + bestNodes.get(0).getY() + ")");
+        System.out.println();
 
-    public void evaporation(Graph graph) {
-
+        new MainWindow(graph, colony);
     }
 }
