@@ -1,66 +1,117 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Colonie, liste de fourmis
+ */
 public class Colony extends ArrayList<Ant> {
-    private Graph graph;
-    private double minLength;
-    private ArrayList<Node> minPath;
-    private int nb_cycle_unchanged;
+    /**
+     * Graph
+     */
+    private final Graph graph;
 
+    /**
+     * Taille minimale
+     */
+    private double minLength;
+
+    /**
+     * Chemin minimal
+     */
+    private List<Node> minPath;
+
+    /**
+     * Nombre de cycles inchangés
+     */
+    private int nbCycleUnchanged;
+
+    /**
+     * Nombre d'itérations
+     */
+    private int nbEpoch;
+
+    /**
+     * Constructeur
+     *
+     * @param graph Graph
+     */
     public Colony(Graph graph) {
         this.graph = graph;
-        for (int i = 0; i < graph.getNodes().length; i++) {
+        for (int i = 0; i < graph.getNodes().size(); i++)
             add(null);
-        }
-        nb_cycle_unchanged = 0;
+        nbCycleUnchanged = 0;
+        nbEpoch = 0;
         this.minLength = Double.POSITIVE_INFINITY;
     }
 
     public void cycleColony() {
-        // On reset les fourmis
-        for (int i = 0; i < size(); i++) {
-            set(i, new Ant(i, new ArrayList<>(Arrays.asList(graph.getNodes()))));
-        }
+        // Fourmis reset
+        for (int i = 0; i < size(); i++)
+            set(i, new Ant(i, graph.getNodes()));
 
-        // Cycles fourmis
-        for (int n = 0; n < graph.getSize(); n++) {
-            for (Ant ant : this) {
+        // Cycles des fourmis
+        for (int n = 0; n < graph.getSize(); n++)
+            for (Ant ant : this)
                 ant.nextNode();
-            }
-        }
 
         // Évaporation
-        for (Link link : graph.getAllLinks()) {
+        for (Link link : graph.getAllLinks())
             link.setPheromones(link.getPheromones() * Constantes.C);
-        }
 
-        boolean cycle_changed = false;
-
-        // On dépose les phéromones
+        // Dépôt des phéromones
         for (Ant ant : this) {
             ant.deposePheromones();
 
-            // On trouve le meilleur chemin courant
+            // Meilleur chemin courant
             if (ant.getTotalLength() < minLength) {
                 minLength = ant.getTotalLength();
                 minPath = ant.getHistory();
-                nb_cycle_unchanged = 0;
-                cycle_changed = true;
             }
         }
 
-        if (!cycle_changed) {
-            nb_cycle_unchanged++;
+        nbEpoch++;
+    }
+
+    /**
+     * Récupère le nombre d'itérations
+     *
+     * @return Nombre d'itérations
+     */
+    public int getNbEpoch() {
+        return nbEpoch;
+    }
+
+    /**
+     * @return Fini ou non
+     */
+    public boolean hasFinished() {
+        int cpt = 0;
+        for (Link link : graph.getAllLinks()) {
+            if (link.getPheromones() < Constantes.ALMOST_ZERO) {
+                cpt++;
+            }
+        }
+
+        if (nbEpoch >= 100_000) {
+            System.out.println("Trop d'itérations");
+            return true;
+        }
+
+        if (graph.getAllLinks().size() - graph.getNodes().size() - cpt == 0) {
+            nbCycleUnchanged ++;
+            return (nbCycleUnchanged >= Constantes.NB_UNCHANGED);
+        }
+        else {
+            nbCycleUnchanged = 0;
+            return false;
         }
     }
 
-    public boolean hasFinished() {
-        return nb_cycle_unchanged >= Constantes.NB_UNCHANGED;
-    }
-
+    /**
+     * @return Meilleur chemin
+     */
     public List<Node> getBestNodes() {
         return minPath;
     }
