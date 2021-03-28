@@ -2,29 +2,31 @@ import model.Colony;
 import model.Constantes;
 import model.Graph;
 import model.Node;
+import model.Simulation;
 import view.MainWindow;
 
 import java.util.List;
 
+/**
+ * Classe principale
+ */
 public class Main {
+    /**
+     * Main
+     *
+     * @param args Arguments
+     */
     public static void main(String[] args) {
-        Graph graph = new Graph(Constantes.NB_NODES);
+        double[][] values = {
+                {0.2, 0.2},
+                {0.5, 0.8},
+                {0.9, 0.4},
+                {0.3, 0.8}
+        };
 
-        Colony colony = new Colony(graph);
+        Simulation simulation = new Simulation(Constantes.NB_NODES);
+        // Simulation simulation = new Simulation(values);
 
-        colony.cycleColony();
-        while (!colony.hasFinished()) {
-            colony.cycleColony();
-        }
-
-        List<Node> bestNodes = colony.getBestNodes();
-
-        for (Node node : bestNodes) {
-            System.out.print("(" + node.getX() + ", " + node.getY() + ") -> ");
-        }
-        System.out.print("(" + bestNodes.get(0).getX() + ", " + bestNodes.get(0).getY() + ")");
-        System.out.println();
-
-        new MainWindow(graph, colony);
+        new MainWindow(simulation);
     }
 }

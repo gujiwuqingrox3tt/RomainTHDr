@@ -2,45 +2,64 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
+/**
+ * Graph
+ */
 public class Graph {
-    private Node[] nodes;
-    private Link[] links;
+    /**
+     * Nœuds
+     */
+    private final List<Node> nodes;
 
-    public Graph(int nbNodes) {
-        // Link[][] liens = new Link[nb][nb];
-        nodes = new Node[nbNodes];
-        links = new Link[(nbNodes * (nbNodes-1))/2];
-        int cptLinks = 0;
+    /**
+     * Liens
+     */
+    private final List<Link> links;
 
-        Random rand = new Random();
+    /**
+     * Constructeur
+     *
+     * @param values Tableau 2D des valeurs
+     */
+    public Graph(double[][] values) {
+        int nbNodes = values.length;
+
+        nodes = new ArrayList<>();
+        links = new ArrayList<>();
 
         for (int i = 0; i < nbNodes; i++) {
-            nodes[i] = new Node(i, rand.nextDouble(), rand.nextDouble());
+            nodes.add(new Node(i, values[i][0], values[i][1]));
         }
 
         for (int i = 0; i < nbNodes; i++) {
             for (int j = i + 1; j < nbNodes; j++) {
-                Link lien = new Link(1, nodes[i], nodes[j]);
-                nodes[i].addLink(lien);
-                nodes[j].addLink(lien);
-
-                links[cptLinks] = lien;
-                cptLinks++;
+                Link lien = new Link(1, nodes.get(i), nodes.get(j));
+                nodes.get(i).addLink(lien);
+                nodes.get(j).addLink(lien);
+                links.add(lien);
             }
         }
     }
 
-    public Node[] getNodes() {
+    /**
+     * @return Nœuds
+     */
+    public List<Node> getNodes() {
         return nodes;
     }
 
-    public Link[] getAllLinks() {
+    /**
+     * @return Liens
+     */
+    public List<Link> getAllLinks() {
         return links;
     }
 
+    /**
+     * @return Taille
+     */
     public int getSize() {
-        return nodes.length;
+        return nodes.size();
     }
 }
