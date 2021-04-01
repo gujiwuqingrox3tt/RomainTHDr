@@ -1,29 +1,58 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+/**
+ * Fourmi
+ */
 public class Ant {
+    /**
+     * Nœud courant
+     */
     private Node currentNode;
-    private ArrayList<Node> availableNodes;
-    private ArrayList<Node> history;
+
+    /**
+     * Nœuds disponibles
+     */
+    private final List<Node> availableNodes;
+
+    /**
+     * Nœuds passés
+     */
+    private final List<Node> history;
+
+    /**
+     * Taille totale
+     */
     private double totalLength;
 
-    public Ant(int id, ArrayList<Node> nodes) {
-        this.availableNodes = (ArrayList<Node>) nodes.clone();
+    /**
+     * Constructeur
+     *
+     * @param id Id
+     * @param nodes Nœuds
+     */
+    public Ant(int id, List<Node> nodes) {
+        availableNodes = new ArrayList<>();
+        availableNodes.addAll(nodes);
         this.totalLength = 0;
         this.currentNode = availableNodes.get(id);
         this.history = new ArrayList<>();
         this.availableNodes.remove(this.currentNode);
     }
 
+    /**
+     * Nœud suivant
+     */
     public void nextNode() {
-        // Si l'on a nulle part où aller
+        // Pas de nœud disponible
         if (availableNodes.size() == 0) {
             history.add(currentNode);
         }
         else {
-            // On calcule les poids
+            // Calcul des poids
             double[] weights = new double[availableNodes.size()];
             double total = 0;
             Link linkCour;
@@ -52,19 +81,31 @@ public class Ant {
         }
     }
 
+    /**
+     * Dépose les phéromones
+     */
     public void deposePheromones() {
-        Link link;
         for (int i = 0; i < history.size(); i++) {
-            link = history.get(i).getLink(history.get((i+1)%history.size()));
-            link.setPheromones(link.getPheromones() + (Constantes.Q/this.totalLength));
+            Link link = history.get(i).getLink(history.get((i + 1) % history.size()));
+            link.setPheromones(link.getPheromones() + (Constantes.Q / this.totalLength));
         }
     }
 
+    /**
+     * Récupère la taille totale
+     *
+     * @return Taille totale
+     */
     public double getTotalLength() {
         return totalLength;
     }
 
-    public ArrayList<Node> getHistory() {
+    /**
+     * Récupère l'historique
+     *
+     * @return Historique
+     */
+    public List<Node> getHistory() {
         return history;
     }
 }

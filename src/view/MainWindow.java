@@ -1,56 +1,40 @@
 package view;
 
-import model.Colony;
-import model.Graph;
+import model.Simulation;
 
-import javax.swing.JFrame;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Frame;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class MainWindow extends JFrame {
-    public static final int WIDTH = 800;
-    public static final int HEIGHT = 800;
+/**
+ * Fenêtre principale
+ */
+public class MainWindow extends Frame {
+    /**
+     * Largeur
+     */
+    public static final int WIDTH = 1280;
 
-    public MainWindow(Graph graph, Colony colony) {
+    /**
+     * Hauteur
+     */
+    public static final int HEIGHT = 720;
+
+    /**
+     * Constructeur
+     *
+     * @param simulation Simulation
+     */
+    public MainWindow(Simulation simulation) {
         setSize(WIDTH, HEIGHT);
         setTitle("TP2 INFO505");
         setLayout(new BorderLayout());
 
-        SimulationCanvas canvas = new SimulationCanvas(graph, colony.getBestNodes());
+        SimulationCanvas canvas = new SimulationCanvas(simulation);
         add(canvas, BorderLayout.CENTER);
-
-        /*Panel panelDown = new Panel(new GridLayout(3, 2));
-
-        panelDown.add(new Label("Nb cycles"), 0, 0);
-        Label nbCyclesLabel = new Label("0");
-        panelDown.add(nbCyclesLabel, 0, 1);
-
-        TextField textField = new TextField("1");
-        panelDown.add(textField, 1, 0);
-
-        Button button = new Button("Avance");
-        button.addActionListener(e -> {
-            int nb;
-
-            try {
-                nb = Integer.parseInt(textField.getText());
-            }
-            catch (NumberFormatException ex) {
-                return;
-            }
-
-            nbCyclesLabel.setText(String.valueOf(Integer.parseInt(nbCyclesLabel.getText()) + nb));
-
-            for (int i = 0; i < nb; i++) {
-                colony.cycleColony();
-            }
-
-            canvas.repaint();
-        });
-        panelDown.add(button, 1, 1);
-
-        add(panelDown, BorderLayout.EAST);*/
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -58,7 +42,16 @@ public class MainWindow extends JFrame {
                 MainWindow.this.dispose();
             }
         });
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+        canvas.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyChar() == 'r') {
+                    simulation.reset();
+                    canvas.repaint();
+                }
+            }
+        });
 
         setVisible(true);
     }
