@@ -27,12 +27,27 @@ public class Simulation {
      */
     private final double[][] values;
 
+    private Random rdm;
+
     /**
      * Constructeur
      *
      * @param values Valeurs des nœuds
      */
     public Simulation(double[][] values) {
+        long seed;
+
+        if (Constantes.SEED == -1) {
+            Random tmp = new Random();
+            seed = tmp.nextLong();
+        }
+        else {
+            seed = Constantes.SEED;
+        }
+
+        rdm = new Random(seed);
+        System.out.println("Seed : " + seed);
+
         this.values = values;
         shuffle = (values[0].length == 0);
         reset();
@@ -54,14 +69,13 @@ public class Simulation {
         int nbNodes = values.length;
 
         if (shuffle) {
-            Random rand = new Random();
             for (int i = 0; i < nbNodes; i++) {
-                values[i] = new double[]{rand.nextDouble(), rand.nextDouble()};
+                values[i] = new double[]{getDouble(), getDouble()};
             }
         }
 
         graph = new Graph(values);
-        colony = new Colony(graph);
+        colony = new Colony(this, graph);
 
         colony.cycleColony();
         while (!colony.hasFinished()) {
@@ -92,5 +106,9 @@ public class Simulation {
      */
     public Colony getColony() {
         return colony;
+    }
+
+    public double getDouble() {
+        return rdm.nextDouble();
     }
 }

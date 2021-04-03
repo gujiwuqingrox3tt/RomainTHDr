@@ -27,4 +27,6 @@ public class Constantes {
      * Valeur sous laquelle il n'y a pas de phéromones
      */
     public static final double ALMOST_ZERO = 0.1;
+
+    public static final int SEED = -1;
 }

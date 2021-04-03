@@ -28,13 +28,16 @@ public class Ant {
      */
     private double totalLength;
 
+    private Simulation simulation;
+
     /**
      * Constructeur
      *
      * @param id Id
      * @param nodes Nœuds
      */
-    public Ant(int id, List<Node> nodes) {
+    public Ant(Simulation simulation, int id, List<Node> nodes) {
+        this.simulation = simulation;
         availableNodes = new ArrayList<>();
         availableNodes.addAll(nodes);
         this.totalLength = 0;
@@ -64,8 +67,8 @@ public class Ant {
             }
 
             // Random
-            Random rdm = new Random();
-            double res = rdm.nextDouble();
+
+            double res = simulation.getDouble();
             double tmp = 0;
             for (int i = 0; i < availableNodes.size(); i++) {
                 tmp += weights[i];

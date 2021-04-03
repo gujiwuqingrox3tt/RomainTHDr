@@ -32,12 +32,15 @@ public class Colony extends ArrayList<Ant> {
      */
     private int nbEpoch;
 
+    private final Simulation simulation;
+
     /**
      * Constructeur
      *
      * @param graph Graph
      */
-    public Colony(Graph graph) {
+    public Colony(Simulation simulation, Graph graph) {
+        this.simulation = simulation;
         this.graph = graph;
         for (int i = 0; i < graph.getNodes().size(); i++)
             add(null);
@@ -49,7 +52,7 @@ public class Colony extends ArrayList<Ant> {
     public void cycleColony() {
         // Fourmis reset
         for (int i = 0; i < size(); i++)
-            set(i, new Ant(i, graph.getNodes()));
+            set(i, new Ant(simulation, i, graph.getNodes()));
 
         // Cycles des fourmis
         for (int n = 0; n < graph.getSize(); n++)
