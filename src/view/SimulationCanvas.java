@@ -54,9 +54,13 @@ public class SimulationCanvas extends Canvas {
         g2d.setColor(Color.BLACK);
         g2d.fillRect(0, 0, getWidth(), getHeight());
 
+        for (Link link : simulation.getGraph().getAllLinks()) {
+            drawLink(g2d, link, false);
+        }
+
         // Liens
         for (int i = 0; i < nodeList.size(); i++) {
-            drawLink(g2d, nodeList.get(i).getLink(nodeList.get((i+1) % nodeList.size())));
+            drawLink(g2d, nodeList.get(i).getLink(nodeList.get((i+1) % nodeList.size())), true);
         }
 
         List<Node> nodes = simulation.getGraph().getNodes();
@@ -91,14 +95,20 @@ public class SimulationCanvas extends Canvas {
     }
 
     /**
-     * Dessine un lien
+     * dessine un lien
      *
-     * @param g2d Graphique
-     * @param link Lien
+     * @param g2d graphique
+     * @param link lien
      */
-    private void drawLink(Graphics2D g2d, Link link) {
-        g2d.setStroke(new BasicStroke(2));
-        g2d.setColor(Color.RED);
+    private void drawLink(Graphics2D g2d, Link link, boolean finalState) {
+        if (finalState) {
+            g2d.setStroke(new BasicStroke(3));
+            g2d.setColor(Color.RED);
+        }
+        else {
+            g2d.setStroke(new BasicStroke(Math.min(3.f, Math.max((float) link.getPheromones(), 1.8f))));
+            g2d.setColor(new Color(63, 0, 0));
+        }
 
         int x1 = (int) (link.getInput().getX() * getWidth());
         int y1 = (int) (link.getInput().getY() * getHeight());
